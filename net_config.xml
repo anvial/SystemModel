@@ -1,0 +1,55 @@
+<?xml version = "1.0"?>
+<!-- My Global network -->
+<network>
+    <domain id = "1">
+        <hosts_number>10</hosts_number>
+        <SV>
+            <SV_elem malware_id = "1">0.5</SV_elem>
+            <SV_elem malware_id = "2">0.5</SV_elem>
+            <SV_elem malware_id = "3">0.5</SV_elem>
+        </SV>
+        <IV>
+            <IV_elem malware_id = "1">0</IV_elem>
+            <IV_elem malware_id = "2">0</IV_elem>
+            <IV_elem malware_id = "3">0</IV_elem>
+        </IV>
+        <res>100</res>
+    </domain>
+    <domain id = "2">
+        <hosts_number>10</hosts_number>
+        <SV>
+            <SV_elem malware_id = "1">0.5</SV_elem>
+            <SV_elem malware_id = "2">0.5</SV_elem>
+            <SV_elem malware_id = "3">0.5</SV_elem>
+        </SV>
+        <IV>
+            <IV_elem malware_id = "1">0</IV_elem>
+            <IV_elem malware_id = "2">0</IV_elem>
+            <IV_elem malware_id = "3">0</IV_elem>
+        </IV>
+        <res>200</res>
+    </domain>
+    <link s_domain_id = "1" d_domain_id = "2">1000</link>
+    <link s_domain_id = "2" d_domain_id = "1">2000</link>
+    <malware id = "1">
+        <infection_speed>3</infection_speed>
+    </malware>
+    <malware id = "2">
+        <infection_speed>4</infection_speed>
+    </malware>
+    <malware id = "3">
+        <infection_speed>5</infection_speed>
+    </malware>
+    <flow id = "1">
+        <source_domain>1</source_domain>
+        <destination_domain>2</destination_domain>
+        <start_rate_function>function1</start_rate_function>
+        <path_calc_type>auto</path_calc_type>
+        <tag_cloud>
+            <tag>tag1</tag>
+            <tag>tag2</tag>
+            <tag>tag3</tag>
+        </tag_cloud>
+        <malware_flag>true</malware_flag>
+    </flow>
+</network>
