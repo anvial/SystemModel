@@ -13,7 +13,7 @@
             <IV_elem malware_id = "2">0</IV_elem>
             <IV_elem malware_id = "3">0</IV_elem>
         </IV>
-        <res>100</res>
+        <res>10000</res>
     </domain>
     <domain id = "2">
         <hosts_number>10</hosts_number>
@@ -27,7 +27,7 @@
             <IV_elem malware_id = "2">0</IV_elem>
             <IV_elem malware_id = "3">0</IV_elem>
         </IV>
-        <res>200</res>
+        <res>20000</res>
     </domain>
     <domain id = "3">
         <hosts_number>10</hosts_number>
@@ -41,12 +41,12 @@
             <IV_elem malware_id = "2">0</IV_elem>
             <IV_elem malware_id = "3">0</IV_elem>
         </IV>
-        <res>300</res>
+        <res>30000</res>
     </domain>
-    <link id = "1" s_domain_id = "1" d_domain_id = "2">1000</link>
-    <link id = "2" s_domain_id = "2" d_domain_id = "1">2000</link>
-    <link id = "3" s_domain_id = "2" d_domain_id = "3">1000</link>
-    <link id = "4" s_domain_id = "3" d_domain_id = "2">2000</link>
+    <link id = "1" s_domain_id = "1" d_domain_id = "2">100</link>
+    <link id = "2" s_domain_id = "2" d_domain_id = "1">100</link>
+    <link id = "3" s_domain_id = "2" d_domain_id = "3">10</link>
+    <link id = "4" s_domain_id = "3" d_domain_id = "2">10</link>
     <malware id = "1">
         <infection_speed>3</infection_speed>
     </malware>
@@ -58,12 +58,28 @@
     </malware>
     <flow id = "1">
         <source_domain>1</source_domain>
-        <destination_domain>2</destination_domain>
+        <destination_domain>3</destination_domain>
         <start_rate_function>function1</start_rate_function>
         <flow_path type = "manual">
             <domain_in_path>1</domain_in_path>
             <domain_in_path>2</domain_in_path>
             <domain_in_path>3</domain_in_path>
+        </flow_path>
+        <tag_cloud>
+            <tag>tag1</tag>
+            <tag>tag2</tag>
+            <tag>tag3</tag>
+        </tag_cloud>
+        <malware_flag>true</malware_flag>
+    </flow>
+    <flow id = "2">
+        <source_domain>3</source_domain>
+        <destination_domain>1</destination_domain>
+        <start_rate_function>function1</start_rate_function>
+        <flow_path type = "manual">
+            <domain_in_path>3</domain_in_path>
+            <domain_in_path>2</domain_in_path>
+            <domain_in_path>1</domain_in_path>
         </flow_path>
         <tag_cloud>
             <tag>tag1</tag>

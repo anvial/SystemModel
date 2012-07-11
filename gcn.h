@@ -36,6 +36,8 @@ public:
     float get_link_bandwidth(int s_domain_id, int d_domain_id);
     int get_link_id(int s_domain_id, int d_domain_id);
 
+    void log_domain_load_res(float time, int domain_id);
+
     void show_links();
     void show_domains();
     void show_flows();

@@ -83,3 +83,8 @@ float Domain::get_flow_res(int flow_id)
 {
     return res_between_flow_distribution[flow_id];
 }
+
+float Domain::get_load_res()
+{
+    return this->load_resoures;
+}

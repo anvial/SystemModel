@@ -96,16 +96,15 @@ int Flow::get_domain_type_for_this_flow(int domain_id)
 int Flow::get_prev_domain_in_flow_path(int domain_id)
 {
     vector<int>::iterator flow_path_iter;
-    int prev_domain_id = -2;
+    int prev_domain_id = -1;
     for(flow_path_iter = flow_path.begin(); flow_path_iter != flow_path.end(); ++flow_path_iter)
     {
-        if((*flow_path_iter) == flow_path.front())
-            prev_domain_id = -1; // becouse first domain in flow path has NO prev domain
-        else if((*flow_path_iter) != domain_id)
-            prev_domain_id = (*flow_path_iter);
-        else
+        if((*flow_path_iter) == domain_id)
             return prev_domain_id;
+        else
+            prev_domain_id = (*flow_path_iter);
     }
+    return prev_domain_id;
 }
 
 
@@ -113,5 +112,5 @@ int Flow::get_prev_domain_in_flow_path(int domain_id)
 float Flow::start_rate_generator()
 {
     // FOR TEST PURPUSE ONLY! There const start rate generator
-    return 10.0;
+    return 1000.0;
 }

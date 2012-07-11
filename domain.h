@@ -37,6 +37,7 @@ public:
     float sub_load(int flow_id, float subtracted_load);
 
     float get_flow_res(int flow_id); // get resource used by flow with ID = flow_id
+    float get_load_res();
 
 
     void get_domain_info();

@@ -1,5 +1,5 @@
 #include "gcn.h"
-
+#include <QDebug>
 GCN::GCN()
 {
     std::cout << "Created Global Network" << std::endl;
@@ -104,7 +104,6 @@ int GCN::flows_throught_domains_streaming()
             {
                 int prev_domain_id = flow->get_prev_domain_in_flow_path(domain_id);
                 Link* link = this->get_link(prev_domain_id,domain_id);
-
                 Domain* prev_domain = domain_map[prev_domain_id];
                 float flow_rate_in_prev_domain = prev_domain->get_flow_res(flow_id); // see how muck ress this flow took in prev domain
 
@@ -207,6 +206,13 @@ int GCN::get_link_id(int s_domain_id, int d_domain_id)
             return link->get_link_id();
     }
     return -1;
+}
+
+void GCN::log_domain_load_res(float time, int domain_id)
+{
+    Domain* domain;
+    domain = domain_map[domain_id];
+    cout << "TIME: " << time << " LOAD_RES = " << domain->get_load_res() << endl;
 }
 
 

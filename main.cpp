@@ -6,7 +6,7 @@
 using namespace std;
 
 const float time_step = 0.01f;
-const float time_fin = 0.01f;
+const float time_fin = 0.11f;
 
 float time_curr;
 
@@ -331,10 +331,11 @@ int main()
 
     while(time_curr <= time_fin)
     {
-        cout << "Curr time = " << time_curr << endl;
+//        cout << "Curr time = " << time_curr << endl;
 
         //time inc
         time_curr += time_step;
+        network->log_domain_load_res(time_curr,2);
         network->tick();
 
     }
