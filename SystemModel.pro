@@ -7,7 +7,8 @@ SOURCES += main.cpp \
     domain.cpp \
     flow.cpp \
     domain_fsm.cpp \
-    malware.cpp
+    malware.cpp \
+    link.cpp
 
 OTHER_FILES += \
     config.xml \
@@ -18,5 +19,6 @@ HEADERS += \
     domain.h \
     flow.h \
     domain_fsm.h \
-    malware.h
+    malware.h \
+    link.h
 

@@ -29,6 +29,7 @@ struct flow_data_struct
     int destination_domain;
     string start_rate_function;
     string path_calc_type;
+    vector<int> flow_path;
     vector<string> tag_cloud;
     bool malware_flag;
 };
@@ -37,6 +38,14 @@ struct malware_data_struct
 {
     int id;
     int infection_speed;
+};
+
+struct link_data_struct
+{
+    int id;
+    int s_domain_id;
+    int d_domain_id;
+    float bandwidth;
 };
 
 map<int,float> traverse_sv_node(const QDomNode& node)
@@ -166,6 +175,29 @@ vector<string> traverse_tag_cloud_node(const QDomNode& node)
     return tc;
 }
 
+vector<int> traverse_flow_path_node(const QDomNode& node)
+{
+    vector<int> fp;
+    QDomNode flowPathNode = node.firstChild();
+    while(!flowPathNode.isNull())
+    {
+        if(flowPathNode.isElement())
+        {
+            QDomElement flowPathElement = flowPathNode.toElement();
+            if(!flowPathElement.isNull())
+            {
+                if(flowPathElement.tagName() == "domain_in_path")
+                {
+                    fp.push_back(flowPathElement.text().toInt());
+                }
+            }
+        }
+        flowPathNode = flowPathNode.nextSibling();
+    }
+    cout << endl;
+    return fp;
+}
+
 flow_data_struct traverse_flow_node(const QDomNode& node)
 {
     flow_data_struct fds;
@@ -189,9 +221,13 @@ flow_data_struct traverse_flow_node(const QDomNode& node)
                 {
                     fds.start_rate_function = flowElement.text().toStdString();
                 }
-                else if(flowElement.tagName() == "path_calc_type")
+                else if(flowElement.tagName() == "flow_path")
                 {
-                    fds.path_calc_type = flowElement.text().toStdString();
+                    fds.path_calc_type = flowElement.attribute("type","").toStdString();
+                    if (fds.path_calc_type == "manual")
+                    {
+                        fds.flow_path = traverse_flow_path_node(flowNode);
+                    }
                 }
                 else if(flowElement.tagName() == "tag_cloud")
                 {
@@ -211,6 +247,7 @@ flow_data_struct traverse_flow_node(const QDomNode& node)
     return fds;
 }
 
+
 void traverseNode(const QDomNode& node, GCN* network)
 {
    QDomNode domNode = node.firstChild();
@@ -227,13 +264,19 @@ void traverseNode(const QDomNode& node, GCN* network)
                    domain_data_struct dds;
                    dds = traverse_domain_node(domNode);
                    dds.id = domElement.attribute("id", "").toInt();
-                   network->add_domain(dds.id,dds.total_hosts_number,dds.security_vector,dds.infection_vector,dds.total_resoures);
+                   network->add_domain(dds.id,dds.total_hosts_number,dds.security_vector,
+                                       dds.infection_vector,dds.total_resoures);
                }
                else if(domElement.tagName() == "link")
                {
-                   network->add_link(domElement.attribute("s_domain_id","").toInt(),
-                                     domElement.attribute("d_domain_id","").toInt(),
-                                     domElement.text().toFloat());
+                   link_data_struct lds;
+                   lds.id = domElement.attribute("id","").toInt();
+                   lds.s_domain_id = domElement.attribute("s_domain_id","").toInt();
+                   lds.d_domain_id = domElement.attribute("d_domain_id","").toInt();
+                   lds.bandwidth = domElement.text().toFloat();
+                   // there is no speccial function traverse_link_node  - because i'm lazy =)
+
+                   network->add_link(lds.id,lds.s_domain_id,lds.d_domain_id,lds.bandwidth);
                }
                else if(domElement.tagName() == "malware")
                {
@@ -248,7 +291,7 @@ void traverseNode(const QDomNode& node, GCN* network)
                    fds = traverse_flow_node(domNode);
                    fds.id = domElement.attribute("id","").toInt();
                    network->add_flow(fds.id,fds.source_domain,fds.destination_domain,
-                                     fds.start_rate_function,fds.path_calc_type,fds.tag_cloud,fds.malware_flag);
+                                     fds.start_rate_function,fds.path_calc_type,fds.flow_path,fds.tag_cloud,fds.malware_flag);
                }
            }           
        }
@@ -280,6 +323,9 @@ int main()
     Read_Config(network);
     network->show_all();
 
+    //BEGIN TEST ZONE
+    //END TEST ZONE
+
     // main loop
     time_curr = 0.0;
 
@@ -289,6 +335,8 @@ int main()
 
         //time inc
         time_curr += time_step;
+        network->tick();
+
     }
 
     return 0;

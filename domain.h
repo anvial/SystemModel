@@ -20,6 +20,9 @@ class Domain
     float load_resoures; // Res(t)
     Domain_FSM* d_fsm; // FPS
 
+    bool domain_overload_state;
+    map<int,float> res_between_flow_distribution; // sum of all == load_resourse ... this struct is need to know how much resources gave to concrete flow
+
     float time;
 
 
@@ -29,6 +32,11 @@ public:
     int initialize();
     int calc_new_inf_number(int malware_id, float t);
     int change_flow(Flow* flow);
+
+    float add_load(int flow_id, float added_load); // return overload value
+    float sub_load(int flow_id, float subtracted_load);
+
+    float get_flow_res(int flow_id); // get resource used by flow with ID = flow_id
 
 
     void get_domain_info();

@@ -15,6 +15,8 @@ Domain::Domain(int domain_id, int thn, map<int, float> sv, map<int, int> iv, flo
     this->infection_vector = iv;
     this->total_resoures = tr;
     this->load_resoures = 0.0;
+
+    this->domain_overload_state = false;
 }
 
 
@@ -36,4 +38,48 @@ void Domain::get_domain_info()
         cout << "   malware id = " << iv_itr->first << " infected hosts = " << iv_itr->second << endl;
     }
     cout << "Domain total Resources      = " << this->total_resoures << endl;
+}
+
+/**
+ * @brief Domain::add_load
+ * @param added_load
+ * @return overload value
+ */
+float Domain::add_load(int flow_id, float added_load)
+{
+    float overload_value = 0.0f;
+
+    this->load_resoures += added_load;
+    if(this->load_resoures > this->total_resoures)
+    {
+        this->domain_overload_state = true;
+        overload_value = this->total_resoures - this->load_resoures;
+        this->load_resoures = this->total_resoures;
+    }
+
+    res_between_flow_distribution[flow_id] += added_load - overload_value;
+    return overload_value;
+}
+
+float Domain::sub_load(int flow_id, float subtracted_load)
+{
+    float minusload_value = 0.0f;
+
+    this->load_resoures -= subtracted_load;
+    if(this->load_resoures < 0.0f)
+    {
+        minusload_value = this->load_resoures * (-1.0f); // to get module of minus value
+        this->load_resoures = 0.0f;
+    }
+
+    if(subtracted_load > 0.0f)
+        this->domain_overload_state = false; // because some resource of domain - NOW free;
+
+    res_between_flow_distribution[flow_id] -= subtracted_load - minusload_value;
+    return minusload_value;
+}
+
+float Domain::get_flow_res(int flow_id)
+{
+    return res_between_flow_distribution[flow_id];
 }

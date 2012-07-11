@@ -29,8 +29,24 @@
         </IV>
         <res>200</res>
     </domain>
-    <link s_domain_id = "1" d_domain_id = "2">1000</link>
-    <link s_domain_id = "2" d_domain_id = "1">2000</link>
+    <domain id = "3">
+        <hosts_number>10</hosts_number>
+        <SV>
+            <SV_elem malware_id = "1">0.5</SV_elem>
+            <SV_elem malware_id = "2">0.5</SV_elem>
+            <SV_elem malware_id = "3">0.5</SV_elem>
+        </SV>
+        <IV>
+            <IV_elem malware_id = "1">0</IV_elem>
+            <IV_elem malware_id = "2">0</IV_elem>
+            <IV_elem malware_id = "3">0</IV_elem>
+        </IV>
+        <res>300</res>
+    </domain>
+    <link id = "1" s_domain_id = "1" d_domain_id = "2">1000</link>
+    <link id = "2" s_domain_id = "2" d_domain_id = "1">2000</link>
+    <link id = "3" s_domain_id = "2" d_domain_id = "3">1000</link>
+    <link id = "4" s_domain_id = "3" d_domain_id = "2">2000</link>
     <malware id = "1">
         <infection_speed>3</infection_speed>
     </malware>
@@ -44,7 +60,11 @@
         <source_domain>1</source_domain>
         <destination_domain>2</destination_domain>
         <start_rate_function>function1</start_rate_function>
-        <path_calc_type>auto</path_calc_type>
+        <flow_path type = "manual">
+            <domain_in_path>1</domain_in_path>
+            <domain_in_path>2</domain_in_path>
+            <domain_in_path>3</domain_in_path>
+        </flow_path>
         <tag_cloud>
             <tag>tag1</tag>
             <tag>tag2</tag>

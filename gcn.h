@@ -8,24 +8,33 @@
 #include "domain.h"
 #include "flow.h"
 #include "malware.h"
+#include "link.h"
 
 using namespace std;
 
 class GCN
 {
-    map <pair<int,int>,float> connecivity_matrix; // value of an element means - bandwidth of this link (id1 ---> id2)
-    vector <Domain *> domain_vector;
-    vector <Flow *> flow_vector;
-    vector <Malware *> malware_vector;
+    map <int, Link *> link_map;
+    map <int, Domain *> domain_map;
+    map <int, Flow *> flow_map;
+    map <int, Malware *> malware_map;
+
+    map <int, float> tick_link_state_map; // to obsrve every link state per one model time tick
 
     float time;
 
 public:
     GCN();
     int add_domain(int domain_id, int thn, map<int,float> sv, map<int,int> iv, float tr);
-    int add_link(int s_domain_id, int d_domain_id, float bandwidth);
-    int add_flow(int flow_id, int sd, int dd, string srf, string pct, vector<string> tc, bool mf);
+    int add_link(int link_id, int sdid, int ddid, float b);
+    int add_flow(int flow_id, int sd, int dd, string srf, string pct,vector<int> fp, vector<string> tc, bool mf);
     int add_malware(int malware_id, int is);
+
+//    int flow_streaming(int flow_id);
+    int flows_throught_domains_streaming();
+    Link* get_link(int s_domain_id, int d_domain_id);
+    float get_link_bandwidth(int s_domain_id, int d_domain_id);
+    int get_link_id(int s_domain_id, int d_domain_id);
 
     void show_links();
     void show_domains();
