@@ -49,12 +49,15 @@
     <link id = "4" s_domain_id = "3" d_domain_id = "2">10</link>
     <malware id = "1">
         <infection_speed>3</infection_speed>
+        <copy_size>15</copy_size>
     </malware>
     <malware id = "2">
         <infection_speed>4</infection_speed>
+        <copy_size>15</copy_size>
     </malware>
     <malware id = "3">
         <infection_speed>5</infection_speed>
+        <copy_size>15</copy_size>
     </malware>
     <flow id = "1">
         <source_domain>1</source_domain>
@@ -70,7 +73,7 @@
             <tag>tag2</tag>
             <tag>tag3</tag>
         </tag_cloud>
-        <malware_flag>true</malware_flag>
+        <malware_flag malware_id = "1" >true</malware_flag>
     </flow>
     <flow id = "2">
         <source_domain>3</source_domain>
@@ -86,6 +89,6 @@
             <tag>tag2</tag>
             <tag>tag3</tag>
         </tag_cloud>
-        <malware_flag>true</malware_flag>
+        <malware_flag malware_id = "2" >true</malware_flag>
     </flow>
 </network>

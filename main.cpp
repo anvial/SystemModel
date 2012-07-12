@@ -32,12 +32,14 @@ struct flow_data_struct
     vector<int> flow_path;
     vector<string> tag_cloud;
     bool malware_flag;
+    int malware_id;
 };
 
 struct malware_data_struct
 {
     int id;
     int infection_speed;
+    float copy_size;
 };
 
 struct link_data_struct
@@ -145,6 +147,10 @@ malware_data_struct traverse_malware_node(const QDomNode& node)
                 {
                     mds.infection_speed = malwareElement.text().toInt();
                 }
+                else if(malwareElement.tagName() == "copy_size")
+                {
+                    mds.copy_size = malwareElement.text().toFloat();
+                }
             }
         }
         malwareNode = malwareNode.nextSibling();
@@ -236,9 +242,16 @@ flow_data_struct traverse_flow_node(const QDomNode& node)
                 else if(flowElement.tagName() == "malware_flag")
                 {
                     if (flowElement.text() == "true")
+                    {
                         fds.malware_flag = true;
+                        fds.malware_id = flowElement.attribute("malware_id","").toInt();
+
+                    }
                     else
+                    {
                         fds.malware_flag = false;
+                        fds.malware_id = -1;
+                    }
                 }
             }
         }
@@ -283,7 +296,7 @@ void traverseNode(const QDomNode& node, GCN* network)
                    malware_data_struct mds;
                    mds = traverse_malware_node(domNode);
                    mds.id = domElement.attribute("id","").toInt();
-                   network->add_malware(mds.id,mds.infection_speed);
+                   network->add_malware(mds.id,mds.infection_speed,mds.copy_size);
                }
                else if(domElement.tagName() == "flow")
                {
@@ -291,7 +304,7 @@ void traverseNode(const QDomNode& node, GCN* network)
                    fds = traverse_flow_node(domNode);
                    fds.id = domElement.attribute("id","").toInt();
                    network->add_flow(fds.id,fds.source_domain,fds.destination_domain,
-                                     fds.start_rate_function,fds.path_calc_type,fds.flow_path,fds.tag_cloud,fds.malware_flag);
+                                     fds.start_rate_function,fds.path_calc_type,fds.flow_path,fds.tag_cloud,fds.malware_flag,fds.malware_id);
                }
            }           
        }
@@ -333,10 +346,10 @@ int main()
     {
 //        cout << "Curr time = " << time_curr << endl;
 
-        //time inc
+//        network->log_domain_load_res(time_curr,2);
+        network->log_domain_inf_hosts(time_curr,2,1);
+        network->tick(time_curr);
         time_curr += time_step;
-        network->log_domain_load_res(time_curr,2);
-        network->tick();
 
     }
 

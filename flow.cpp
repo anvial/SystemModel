@@ -5,7 +5,7 @@ Flow::Flow()
 {
 }
 
-Flow::Flow(int flow_id, int sd, int dd, string srf, string pct,vector<int> fp, vector<string> tc, bool mf)
+Flow::Flow(int flow_id, int sd, int dd, string srf, string pct, vector<int> fp, vector<string> tc, bool mf, int mid)
 {
     this->id = flow_id;
     this->source_domain = sd;
@@ -15,6 +15,7 @@ Flow::Flow(int flow_id, int sd, int dd, string srf, string pct,vector<int> fp, v
     this->flow_path = fp;
     this->tag_cloud = tc;
     this->malware_flag = mf;
+    this->malware_id = mid;
 }
 
 int Flow::change_state(int d_id, float f_r, float f_l, float f_d)
@@ -53,6 +54,7 @@ void Flow::get_flow_info()
     }
     cout << endl;
     cout << "Flow malware flag             = " << this->malware_flag << endl;
+    cout << "Flow malware id               = " << this->malware_id << endl;
 }
 
 
@@ -105,6 +107,16 @@ int Flow::get_prev_domain_in_flow_path(int domain_id)
             prev_domain_id = (*flow_path_iter);
     }
     return prev_domain_id;
+}
+
+int Flow::get_flow_malware_id()
+{
+    return this->malware_id;
+}
+
+bool Flow::is_malware()
+{
+    return this->malware_flag;
 }
 
 

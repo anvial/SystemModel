@@ -21,16 +21,16 @@ int GCN::add_link(int link_id, int sdid, int ddid, float b)
     return 0;
 }
 
-int GCN::add_flow(int flow_id, int sd, int dd, string srf, string pct,vector<int> fp, vector<string> tc, bool mf)
+int GCN::add_flow(int flow_id, int sd, int dd, string srf, string pct,vector<int> fp, vector<string> tc, bool mf, int mid)
 {
-    Flow* flow = new Flow(flow_id,sd,dd,srf,pct,fp,tc,mf);
+    Flow* flow = new Flow(flow_id,sd,dd,srf,pct,fp,tc,mf,mid);
     this->flow_map.insert(pair<int, Flow*>(flow_id,flow));
     return 0;
 }
 
-int GCN::add_malware(int malware_id, int is)
+int GCN::add_malware(int malware_id, int is, float cs)
 {
-    Malware* malware = new Malware(malware_id,is);
+    Malware* malware = new Malware(malware_id,is,cs);
     this->malware_map.insert(pair<int, Malware*>(malware_id,malware));
     return 0;
 }
@@ -75,7 +75,7 @@ int GCN::add_malware(int malware_id, int is)
 
 // domains than flows
 // THIS THE MOST FUCKING COMPLEX FUNCTION IN THIS MODEL
-int GCN::flows_throught_domains_streaming()
+int GCN::flows_throught_domains_streaming(float time)
 {
     map<int, Domain*>::iterator domain_map_iter;
 
@@ -99,6 +99,14 @@ int GCN::flows_throught_domains_streaming()
                 float start_rate = flow->start_rate_generator();
                 float overload = domain->add_load(flow_id, start_rate); // change domain load... overload may be NULL
                 flow->change_state(domain_id,start_rate - overload,overload,0.0f); // change flow state at this domain
+                //change domains vuln host number
+                if(flow->is_malware())
+                {
+                    Malware* malware;
+                    malware = malware_map[flow->get_flow_malware_id()];
+                    domain->change_inf_hosts_number(flow->get_flow_malware_id(),start_rate,
+                                                    malware->get_copy_size(),malware->get_infection_speed());
+                }
             }
             else if (domain_for_flow_type == 1) // transit domain for this flow
             {
@@ -119,6 +127,15 @@ int GCN::flows_throught_domains_streaming()
                 //change domains (curr and prev) load
                 prev_domain->sub_load(flow_id,transfer_rate);
                 domain->add_load(flow_id,transfer_rate);
+
+                //change domains vuln host number
+                if(flow->is_malware())
+                {
+                    Malware* malware;
+                    malware = malware_map[flow->get_flow_malware_id()];
+                    domain->change_inf_hosts_number(flow->get_flow_malware_id(),transfer_rate,
+                                                    malware->get_copy_size(),malware->get_infection_speed());
+                }
 
                 //change tick link state
                 tick_link_state_map[link_id] += transfer_rate;
@@ -143,6 +160,15 @@ int GCN::flows_throught_domains_streaming()
 
                 //change domains (curr and prev) load
                 prev_domain->sub_load(flow_id,transfer_rate); // NO ADD LOAD - becouse of consume
+
+                //change domains vuln host number
+                if(flow->is_malware())
+                {
+                    Malware* malware;
+                    malware = malware_map[flow->get_flow_malware_id()];
+                    domain->change_inf_hosts_number(flow->get_flow_malware_id(),transfer_rate,
+                                                    malware->get_copy_size(),malware->get_infection_speed());
+                }
 
                 //change tick link state
                 tick_link_state_map[link_id] += transfer_rate;
@@ -215,6 +241,13 @@ void GCN::log_domain_load_res(float time, int domain_id)
     cout << "TIME: " << time << " LOAD_RES = " << domain->get_load_res() << endl;
 }
 
+void GCN::log_domain_inf_hosts(float time, int domain_id, int malware_id)
+{
+    Domain* domain;
+    domain = domain_map[domain_id];
+    cout << "TIME: " << time << " INF_HOSTS = " << domain->get_inf_hosts(malware_id) << endl;
+}
+
 
 
 void GCN::show_links()
@@ -278,7 +311,7 @@ void GCN::show_all()
     this->show_malware();
 }
 
-int GCN::tick()
+int GCN::tick(float time)
 {
     // makw NULL all tick link states
     map<int,float>::iterator tick_link_state_map_iter;
@@ -287,7 +320,7 @@ int GCN::tick()
         tick_link_state_map_iter->second = 0.0f;
     }
 
-    this->flows_throught_domains_streaming();
+    this->flows_throught_domains_streaming(time);
 
     return 0;
 }

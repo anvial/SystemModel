@@ -17,6 +17,8 @@ Domain::Domain(int domain_id, int thn, map<int, float> sv, map<int, int> iv, flo
     this->load_resoures = 0.0;
 
     this->domain_overload_state = false;
+
+    this->infectivity_koef = 1.0f;
 }
 
 
@@ -87,4 +89,32 @@ float Domain::get_flow_res(int flow_id)
 float Domain::get_load_res()
 {
     return this->load_resoures;
+}
+
+int Domain::get_inf_hosts(int malware_id)
+{
+    return this->infection_vector[malware_id];
+}
+
+// number of hosts (vuln or active or infected - ALWAYS INT!!! )
+int Domain::change_inf_hosts_number(int malware_id, float transfer_rate, float copy_size, int infection_speed) // inferction_speed = contact_rate -- if to use SIR notation
+{
+    //calc vuln hosts number
+    int vuln_hosts_number = (int)active_hosts_number*(1 - security_vector[malware_id]) - infection_vector[malware_id];
+
+    //calc result_infected_hosts_speed
+    int result_infected_hosts_speed = (int)((infection_vector[malware_id] + (transfer_rate / copy_size)) * infection_speed * vuln_hosts_number) /
+            active_hosts_number * infectivity_koef; //  "+ (transfer_rate / copy_size)" - its additional copies that came with new malware traffic flow to this domain
+
+//    cout << "Did = " << this->id << " vuln = " << vuln_hosts_number <<
+//            " inf = " << infection_vector[malware_id] << " mid = " << malware_id <<
+//            " new_inf = " << result_infected_hosts_speed << endl;
+
+    //add new infected hosts to domain
+    if (vuln_hosts_number < result_infected_hosts_speed)
+        infection_vector[malware_id] += vuln_hosts_number;
+    else
+        infection_vector[malware_id] += result_infected_hosts_speed;
+
+    return 0;
 }
