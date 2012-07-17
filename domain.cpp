@@ -18,7 +18,7 @@ Domain::Domain(int domain_id, int thn, map<int, float> sv, map<int, int> iv, flo
 
     this->domain_overload_state = false;
 
-    this->infectivity_koef = 1.0f;
+    this->infectivity_koef = 0.5f;
 }
 
 
@@ -112,7 +112,7 @@ int Domain::change_inf_hosts_number(int malware_id, float transfer_rate, float c
 
     //add new infected hosts to domain
     if (vuln_hosts_number < result_infected_hosts_speed)
-        infection_vector[malware_id] += vuln_hosts_number;
+        infection_vector[malware_id] += vuln_hosts_number; // cos we can infect more than vuln hosts number
     else
         infection_vector[malware_id] += result_infected_hosts_speed;
 

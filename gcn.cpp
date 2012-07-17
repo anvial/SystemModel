@@ -21,7 +21,7 @@ int GCN::add_link(int link_id, int sdid, int ddid, float b)
     return 0;
 }
 
-int GCN::add_flow(int flow_id, int sd, int dd, string srf, string pct,vector<int> fp, vector<string> tc, bool mf, int mid)
+int GCN::add_flow(int flow_id, int sd, int dd, string srf, string pct,vector<int> fp, set<string> tc, bool mf, int mid)
 {
     Flow* flow = new Flow(flow_id,sd,dd,srf,pct,fp,tc,mf,mid);
     this->flow_map.insert(pair<int, Flow*>(flow_id,flow));

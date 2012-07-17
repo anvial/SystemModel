@@ -3,8 +3,12 @@
 
 #include <vector>
 #include <string>
+#include <list>
+#include <set>
 #include <iostream>
 #include <map>
+
+#include <random>
 
 using namespace std;
 
@@ -17,9 +21,10 @@ class Flow
     string path_calc_type;
     bool malware_flag;
     int malware_id; // -1 if - NOT malware, malware id in other case
-    vector<string> tag_cloud; // tag cloud of this flow
+    set<string> tag_cloud; // tag cloud of this flow
     vector<int> flow_path; // sequence of domain ids, that flow needs to go
     float * begin_point_flow_rate; // pointer to begin flow rate function
+
 
     struct Flow_state_struct // flow state is calc in every domain it come throught
     {
@@ -32,10 +37,10 @@ class Flow
 
 public:
     Flow();
-    Flow(int flow_id, int sd, int dd, string srf, string pct,vector<int> fp, vector<string> tc, bool mf, int mid);
+    Flow(int flow_id, int sd, int dd, string srf, string pct,vector<int> fp, set<string> tc, bool mf, int mid);
     int change_state(int d_id, float f_r, float f_l, float f_d);
     int change_path(vector<int> new_flow_path); // TO DO
-    vector<string> get_flow_tags();
+    set<string> get_flow_tags();
     vector<int> get_flow_path();
     int get_domain_type_for_this_flow(int domain_id);
     int get_prev_domain_in_flow_path(int domain_id);

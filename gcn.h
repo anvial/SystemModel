@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <set>
 #include <map>
 
 #include "domain.h"
@@ -25,7 +26,7 @@ public:
     GCN();
     int add_domain(int domain_id, int thn, map<int,float> sv, map<int,int> iv, float tr);
     int add_link(int link_id, int sdid, int ddid, float b);
-    int add_flow(int flow_id, int sd, int dd, string srf, string pct, vector<int> fp, vector<string> tc, bool mf, int mid);
+    int add_flow(int flow_id, int sd, int dd, string srf, string pct, vector<int> fp, set<string> tc, bool mf, int mid);
     int add_malware(int malware_id, int is, float cs);
 
 //    int flow_streaming(int flow_id);

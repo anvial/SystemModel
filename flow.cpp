@@ -5,7 +5,7 @@ Flow::Flow()
 {
 }
 
-Flow::Flow(int flow_id, int sd, int dd, string srf, string pct, vector<int> fp, vector<string> tc, bool mf, int mid)
+Flow::Flow(int flow_id, int sd, int dd, string srf, string pct, vector<int> fp, set<string> tc, bool mf, int mid)
 {
     this->id = flow_id;
     this->source_domain = sd;
@@ -33,7 +33,7 @@ int Flow::change_state(int d_id, float f_r, float f_l, float f_d)
 
 void Flow::get_flow_info()
 {
-    vector<string>::iterator tc_iter;
+    set<string>::iterator tc_iter;
     vector<int>::iterator fp_iter;
     cout << "---Short info about This Flow " << endl;
     cout << "Flow id                       = " << this->id << endl;
@@ -41,13 +41,13 @@ void Flow::get_flow_info()
     cout << "Flow destination domain id    = " << this->destination_domain << endl;
     cout << "Flow start rate function name = " << this->start_rate_function <<  endl;
     cout << "Flow path calc type           = " << this->path_calc_type << endl;
-    cout << "Flow has following tags: ";
+    cout << "Flow has following tags       : ";
     for(tc_iter = this->tag_cloud.begin(); tc_iter != this->tag_cloud.end(); ++tc_iter)
     {
         cout << (*tc_iter) << " ";
     }
     cout << endl;
-    cout << "Flow has following flow path: ";
+    cout << "Flow has following flow path  : ";
     for(fp_iter = this->flow_path.begin(); fp_iter != this->flow_path.end(); ++fp_iter)
     {
         cout << (*fp_iter) << " ";
@@ -58,7 +58,7 @@ void Flow::get_flow_info()
 }
 
 
-vector<string> Flow::get_flow_tags()
+set<string> Flow::get_flow_tags()
 {
     return this->tag_cloud;
 }

@@ -30,7 +30,7 @@ struct flow_data_struct
     string start_rate_function;
     string path_calc_type;
     vector<int> flow_path;
-    vector<string> tag_cloud;
+    set<string> tag_cloud;
     bool malware_flag;
     int malware_id;
 };
@@ -158,9 +158,9 @@ malware_data_struct traverse_malware_node(const QDomNode& node)
     return mds;
 }
 
-vector<string> traverse_tag_cloud_node(const QDomNode& node)
+set<string> traverse_tag_cloud_node(const QDomNode& node)
 {
-    vector<string> tc;
+    set<string> tc;
     QDomNode tagCloudNode = node.firstChild();
     while(!tagCloudNode.isNull())
     {
@@ -171,7 +171,7 @@ vector<string> traverse_tag_cloud_node(const QDomNode& node)
             {
                 if(tagCloudElement.tagName() == "tag")
                 {
-                    tc.push_back(tagCloudElement.text().toStdString());
+                    tc.insert(tagCloudElement.text().toStdString());
                 }
             }
         }
@@ -329,6 +329,23 @@ void Read_Config(GCN* network)
 
 }
 
+
+void test_set_diff()
+{
+    set<int> s1,s2,s3;
+    s1.insert(1);
+    s1.insert(3);
+    s1.insert(2);
+
+    s2.insert(1);
+    s2.insert(3);
+    s2.insert(2);
+    s2.insert(4);
+
+    set_difference(s1.begin(),s1.end(),s2.begin(),s2.end(), inserter(s3, s3.begin()));
+    cout << "DIFF = " << s3.size() << endl;
+}
+
 int main()
 {
     GCN* network = new GCN();
@@ -337,10 +354,11 @@ int main()
     network->show_all();
 
     //BEGIN TEST ZONE
+    test_set_diff();
     //END TEST ZONE
 
     // main loop
-    time_curr = 0.0;
+    time_curr = 0.11f;
 
     while(time_curr <= time_fin)
     {
